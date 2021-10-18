@@ -1,0 +1,42 @@
+#!/usr/bin/perl
+#
+# A simple PERL script to decode CheckPoint DataCenter JSON file
+#
+# by HristoGrigorov@CheckMates
+#
+
+use lib qw(..);
+use JSON qw( );
+
+my $filename = $ARGV[0];
+if (!$ARGV[0]) {
+	print "Usage: deccpjson <path to JSON file>\n";
+	exit 1;
+}
+
+print "\nCheckPoint DataCenter JSON decoder by HristoGrigorov@CheckMates\n";
+
+my $json_text = do {
+   open(my $json_fh, "<:encoding(UTF-8)", $filename)
+      or die("Can't open \$filename\": $!\n");
+   local $/;
+   <$json_fh>
+};
+
+my $json = JSON->new;
+my $data = $json->decode($json_text);
+
+for ( @{$data->{objects}} ) 
+{
+  print "\nObject Name: $_->{name}\n";
+  print "Object ID  : $_->{id}\n";
+  print "Object Desc: $_->{description}\n";
+  my $cnt=1;
+  for ( @{$_->{ranges}} ) 
+  {
+    print "Range[$cnt]: $_\n";
+    $cnt++;
+  }
+}
+
+print "\n";
