@@ -1,0 +1,127 @@
+#!/bin/bash
+#
+# Simple script to donload TOR file from CheckPoint server
+# and save it in DataCenter Object (JSON) format.
+#
+# Refer to CheckPoint sk167210 for more details.
+#
+# by HristoGrigorov@CheckMates
+#
+
+################################################################################
+
+# Defailt JSON location and file name
+JSON_FILE="TOR.json"
+
+# Temp file where to store downloaded TOR list
+TOR_FILE="/tmp/TOR.txt"
+
+# Text for <name> field in JSON file
+NAME="TOR Exit Nodes"
+
+# Download URL
+TOR_URL="https://secureupdates.checkpoint.com/IP-list/TOR.txt"
+
+################################################################################
+
+echo "tor2json - A simple script to download TOR file and conert it to JSON format"
+
+# Check for dos2unix command
+if ! hash dos2unix 2>/dev/null; then
+	echo "$0:Command dos2unix is required for this script to run. Install it and try again."
+	exit 1
+fi
+
+# Check for curl command (on Gaia curl_cli is guaranteed to exist)
+if [ -e "/etc/os-release" ] && ! hash curl 2>/dev/null; then
+        echo "$0:Command curl is required for this script to run. Install it and try again."
+        exit 1
+fi
+
+# Print out usage info
+if [[ "$1" == "-h" || "$1" == "-?" ]]; then
+	echo "Usage: tor2json <path to json file>"
+	exit 0
+fi
+
+# Read JSON file path from command line 
+if [ "$1" != "" ]; then
+	JSON_FILE=$1
+fi
+
+# Check if exists and backup prev TOR file
+if [ -e "$TOR_FILE" ]; then
+	echo "$0:Previous file $TOR_FILE saved as $TOR_FILE.BAK"
+	mv -f $TOR_FILE $TOR_FILE.BAK
+fi
+
+# Download TOR file from CheckPoint server
+echo "$0:Downloading TOR file from $TOR_URL"
+if [ -e "/etc/cp-release" ]; then
+	echo "$0:Detected platform is CheckPoint Gaia OS"
+	curl_cli -s -f -k $TOR_URL -o $TOR_FILE
+else
+	echo "$0:Detected platform is Generic Linux OS"
+	curl -s -f -k $TOR_URL -o $TOR_FILE
+fi
+
+# Check if TOR.txt is downloaded and fail otherwise
+if [ ! -e "$TOR_FILE" ]; then
+        echo "$0:An error ocurred download TOR file. Please check curl output"
+        exit 1
+fi
+
+# Sanity check if file is not empty or smthg
+FSIZE=$(stat -c%s "$TOR_FILE")
+if [ $FSIZE -lt 10000 ]; then
+	echo "$0:Download file too small in size ($FSIZE bytes)"
+	exit 1
+fi
+
+# Covert to Unix format
+dos2unix $TOR_FILE > /dev/null 2>&1
+
+# Count lines in file
+LINES=`cat $TOR_FILE | wc -l`
+
+echo "$0:TOR file name  : $TOR_FILE"
+echo "$0:TOR file size  : $FSIZE bytes"
+echo "$0:TOR file length: $LINES (IPs)"
+
+echo "$0:Preparing JSON structure..."
+
+TOR_IP=`awk '{ print "\\t\\t\\t\\t\\t\""$0"\"," }' $TOR_FILE`
+TOR_IP=${TOR_IP::-1}
+
+UUID=$(cat /proc/sys/kernel/random/uuid)
+DATE=$(date)
+
+cat << END_HEADER > $JSON_FILE
+{
+      "version": "1.0",
+      "description": "CheckPoint Generic Data Center file to block TOR exit nodes",
+      "objects": [
+                          {
+                               "name": "$NAME",
+                               "id": "$UUID",
+                               "description": "Generated on $DATE",
+                               "ranges": [
+END_HEADER
+
+echo "$TOR_IP" >> $JSON_FILE
+
+cat << END_FOOTER >> $JSON_FILE
+                               ]
+                          }
+     ]
+}
+END_FOOTER
+
+echo "$0:JSON file name: $JSON_FILE"
+echo "$0:JSON file id  : $UUID"
+echo "$0:JSON file date: $DATE"
+
+echo "$0:Script finished successfully."
+exit 0
+
+# EOF
