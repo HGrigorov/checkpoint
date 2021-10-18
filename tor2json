@@ -10,7 +10,7 @@
 
 ################################################################################
 
-# Defailt JSON location and file name
+# Default JSON location and file name
 JSON_FILE="TOR.json"
 
 # Temp file where to store downloaded TOR list
@@ -96,15 +96,25 @@ TOR_IP=${TOR_IP::-1}
 UUID=$(cat /proc/sys/kernel/random/uuid)
 DATE=$(date)
 
+UUID_STR="\"id\": \"$UUID\","
+
+# Check if exists and backup prev JSON file
+if [ -e "$JSON_FILE" ]; then
+        echo "$0:Previous file $JSON_FILE saved as $JSON_FILE.BAK"
+        mv -f $JSON_FILE $JSON_FILE.BAK
+	# Preserve UUID from prev file
+	UUID_STR=`cat $JSON_FILE.BAK | grep id | tr -d '[:space:]'`
+fi
+
 cat << END_HEADER > $JSON_FILE
 {
-      "version": "1.0",
-      "description": "CheckPoint Generic Data Center file to block TOR exit nodes",
+      "version":"1.0",
+      "description":"CheckPoint Generic Data Center file to block TOR exit nodes",
       "objects": [
                           {
-                               "name": "$NAME",
-                               "id": "$UUID",
-                               "description": "Generated on $DATE",
+                               "name":"$NAME",
+                               $UUID_STR
+                               "description":"Generated on $DATE",
                                "ranges": [
 END_HEADER
 
@@ -118,7 +128,6 @@ cat << END_FOOTER >> $JSON_FILE
 END_FOOTER
 
 echo "$0:JSON file name: $JSON_FILE"
-echo "$0:JSON file id  : $UUID"
 echo "$0:JSON file date: $DATE"
 
 echo "$0:Script finished successfully."
