@@ -21,6 +21,7 @@ NAME="TOR Exit Nodes"
 
 # Download URL
 TOR_URL="https://secureupdates.checkpoint.com/IP-list/TOR.txt"
+#TOR_URL="https://check.torproject.org/torbulkexitlist"
 
 ################################################################################
 
