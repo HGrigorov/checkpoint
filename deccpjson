@@ -6,37 +6,111 @@
 #
 
 use lib qw(..);
+use Getopt::Std;
 use JSON qw( );
 
-my $filename = $ARGV[0];
-if (!$ARGV[0]) {
-	print "Usage: deccpjson <path to JSON file>\n";
+# Declare global vars
+my $JSON_FILE = undef;
+my $OBJECT_NAME = undef;
+my $OBJECT_DESC = undef;
+my $OBJECT_ID = undef;
+my $OBJECT_RANGE = undef;
+
+our ($opt_h, $opt_f, $opt_n, $opt_d, $opt_i, $opt_r);
+
+getopts('hf:n:d:i:r:');
+
+print "\nCheckPoint DataCenter JSON file decoder by HristoGrigorov@CheckMates\n";
+
+# Help
+if ($opt_h) {	
+	print "Usage: deccpjson -f <path to JSON file> [-n <name>] [-d <descr>] [-i <id>] [-r <range>] [-h]\n\n";
 	exit 1;
 }
 
-print "\nCheckPoint DataCenter JSON decoder by HristoGrigorov@CheckMates\n";
+# Filename
+if ($opt_f) {
+	if (! -f $opt_f) {
+		print "error: unable to access $opt_f (check if file exists)\n";
+		exit 1;
+	}
+	$JSON_FILE = $opt_f;
+}
 
+# Object Name
+if ($opt_n) {
+	print "Search for Object Name: $opt_n\n";
+	$OBJECT_NAME = $opt_n;
+}
+
+# Object Descr
+if ($opt_d) {
+        print "Search for Object Description: $opt_d\n";
+        $OBJECT_DESC = $opt_d;
+}
+
+# Object ID
+if ($opt_i) {
+        print "Search for Object ID: $opt_i\n";
+        $OBJECT_ID = $opt_i;
+}
+
+# Object Range
+if ($opt_r) {
+        print "Search for Object Range: $opt_r\n";
+        $OBJECT_RANGE = $opt_r;
+}
+
+# Store file content into internal variable
 my $json_text = do {
-   open(my $json_fh, "<:encoding(UTF-8)", $filename)
-      or die("Can't open \$filename\": $!\n");
+   open(my $json_fh, "<:encoding(UTF-8)", $JSON_FILE)
+      or die("Can't open \$JSON_FILE\": $!\n");
    local $/;
    <$json_fh>
 };
 
+# Decode JSON structure
 my $json = JSON->new;
 my $data = $json->decode($json_text);
 
+# Iterate and print
 for ( @{$data->{objects}} ) 
 {
-  print "\nObject Name: $_->{name}\n";
-  print "Object ID  : $_->{id}\n";
-  print "Object Desc: $_->{description}\n";
-  my $cnt=1;
-  for ( @{$_->{ranges}} ) 
-  {
-    print "Range[$cnt]: $_\n";
-    $cnt++;
-  }
+	my $obj_name = $_->{name};
+	my $obj_desc = $_->{description};
+	my $obj_id = $_->{id};
+
+	if ($OBJECT_NAME || $OBJECT_DESC || $OBJECT_ID) {
+
+		my $is_match = 0;
+
+		$is_match = 1 if ( $OBJECT_NAME && index(lc($obj_name), lc($OBJECT_NAME)) != -1 );
+		$is_match = 1 if ( $OBJECT_DESC && index(lc($obj_desc), lc($OBJECT_DESC)) != -1 );
+		$is_match = 1 if ( $OBJECT_ID && index(lc($obj_id), lc($OBJECT_ID)) != -1 );
+
+		next if (0 == $is_match);
+	}
+
+	if (!$OBJECT_RANGE) {
+		print "\nObject Name  : $obj_name\n";
+		print "Object ID    : $obj_id\n";
+		print "Object Desc  : $obj_desc\n";
+	}
+
+	my $cnt=1;
+	for ( @{$_->{ranges}} ) {
+		if ($OBJECT_RANGE) {
+			if (index($_, $OBJECT_RANGE) != -1) {
+				print "\nFound in object $obj_name as $_\n";
+				next;
+			}
+		} else {
+			print "[$cnt]: $_\n";
+			$cnt++;
+		}
+	}
 }
 
 print "\n";
+
+# EOF
