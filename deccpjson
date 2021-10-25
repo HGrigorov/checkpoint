@@ -5,33 +5,34 @@
 # by HristoGrigorov@CheckMates
 #
 
-use lib qw(..);
+use v5.10;
 use Getopt::Std;
-use JSON qw( );
+use JSON::PP;
 
 # Declare global vars
-my $JSON_FILE = undef;
-my $OBJECT_NAME = undef;
-my $OBJECT_DESC = undef;
-my $OBJECT_ID = undef;
-my $OBJECT_RANGE = undef;
+my $JSON_FILE;
+my $OBJECT_NAME;
+my $OBJECT_DESC;
+my $OBJECT_ID;
+my $OBJECT_RANGE;
 
 our ($opt_h, $opt_f, $opt_n, $opt_d, $opt_i, $opt_r);
 
+# Parse command line
 getopts('hf:n:d:i:r:');
 
-print "\nCheckPoint DataCenter JSON file decoder by HristoGrigorov@CheckMates\n";
+say "\nCheckPoint DataCenter JSON file decoder by Hristo Grigorv\n";
 
 # Help
 if ($opt_h) {	
-	print "Usage: deccpjson -f <path to JSON file> [-n <name>] [-d <descr>] [-i <id>] [-r <range>] [-h]\n\n";
+	say "Usage: deccpjson -f <path to JSON file> [-n <name>] [-d <descr>] [-i <id>] [-r <range>] [-h]\n";
 	exit 1;
 }
 
 # Filename
 if ($opt_f) {
 	if (! -f $opt_f) {
-		print "error: unable to access $opt_f (check if file exists)\n";
+		say "error:unable to access $opt_f (check if file exists)";
 		exit 1;
 	}
 	$JSON_FILE = $opt_f;
@@ -39,25 +40,25 @@ if ($opt_f) {
 
 # Object Name
 if ($opt_n) {
-	print "Search for Object Name: $opt_n\n";
+	say "Search for Object Name: $opt_n";
 	$OBJECT_NAME = $opt_n;
 }
 
 # Object Descr
 if ($opt_d) {
-        print "Search for Object Description: $opt_d\n";
+        say "Search for Object Description: $opt_d";
         $OBJECT_DESC = $opt_d;
 }
 
 # Object ID
 if ($opt_i) {
-        print "Search for Object ID: $opt_i\n";
+        say "Search for Object ID: $opt_i";
         $OBJECT_ID = $opt_i;
 }
 
 # Object Range
 if ($opt_r) {
-        print "Search for Object Range: $opt_r\n";
+        say "Search for Object Range: $opt_r";
         $OBJECT_RANGE = $opt_r;
 }
 
@@ -70,7 +71,7 @@ my $json_text = do {
 };
 
 # Decode JSON structure
-my $json = JSON->new;
+my $json = JSON::PP->new->ascii->pretty->allow_nonref;
 my $data = $json->decode($json_text);
 
 # Iterate and print
@@ -92,25 +93,25 @@ for ( @{$data->{objects}} )
 	}
 
 	if (!$OBJECT_RANGE) {
-		print "\nObject Name  : $obj_name\n";
-		print "Object ID    : $obj_id\n";
-		print "Object Desc  : $obj_desc\n";
+		say "";
+		say "Object Name  : $obj_name";
+		say "Object ID    : $obj_id";
+		say "Object Desc  : $obj_desc";
 	}
 
 	my $cnt=1;
 	for ( @{$_->{ranges}} ) {
 		if ($OBJECT_RANGE) {
 			if (index($_, $OBJECT_RANGE) != -1) {
-				print "\nFound in object $obj_name as $_\n";
+				say "Found in object $obj_name as $_";
 				next;
 			}
 		} else {
-			print "[$cnt]: $_\n";
-			$cnt++;
+			say "[".$cnt++."]: $_";
 		}
 	}
 }
 
-print "\n";
+say;
 
 # EOF
