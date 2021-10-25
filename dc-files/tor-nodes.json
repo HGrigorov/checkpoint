@@ -1,6 +1,6 @@
 {
       "version":"1.0",
-      "description":"CheckPoint Generic Data Center file to block TOR exit nodes",
+      "description":"CheckPoint Generic Data Center file (TOR Exit Nodes)",
       "objects": [
                           {
                                "name":"TOR Exit Nodes",
