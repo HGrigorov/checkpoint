@@ -5,7 +5,7 @@
                           {
                                "name": "SHODAN.IO",
                                "id": "d2b6273c-2c0d-11ec-93dd-1f96e5a71e86",
-                               "description": "Blocked for port scanning",
+                               "description": "https://www.shodan.io/",
                                "ranges": [
                                         "198.20.87.98",
                                         "185.142.236.43",
@@ -53,7 +53,7 @@
                           {
                                "name": "INTERNET-CENSUS",
                                "id": "1454f632-2c09-11ec-8881-3b93e5a71e86",
-                               "description": "Blocked for port scanning",
+                               "description": "https://www.internet-census.org/",
                                "ranges": [
                                         "23.90.128.0/18",
                                         "23.251.96.0/19",
@@ -84,7 +84,7 @@
                           {
                                "name": "CENSYS",
                                "id": "bdab92e4-2c05-11ec-8532-5a91e5a71e86",
-                               "description": "Blocked for port scanning",
+                               "description": "https://censys.io/",
                                "ranges": [
                                         "74.120.14.0/24",
                                         "162.142.125.0/24",
@@ -96,7 +96,7 @@
                           {
                                "name": "CRIMINALIP",
                                "id": "95f3a55e-2c08-11ec-ab2d-fa92e5a71e86",
-                               "description": "Blocked for port scanning",
+                               "description": "https://security.criminalip.com/",
                                "ranges": [
                                         "80.82.77.0/24",
                                         "80.82.78.0/24",
@@ -113,7 +113,7 @@
                           {
                                "name": "SHADOWSERVER",
                                "id": "a57d350e-2c0c-11ec-a741-0995e5a71e86",
-                               "description": "Blocked for port scanning",
+                               "description": "https://www.shadowserver.org/",
                                "ranges": [
                                         "64.62.202.96/27",
                                         "65.49.0.0/17",
@@ -129,7 +129,7 @@
                           {
                                "name": "Net Systems Research",
                                "id": "f9b75ee0-30b9-11ec-9234-aab3e7a71e86",
-                               "description": "Blocked for port scanning",
+                               "description": "https://www.netsystemsresearch.com/",
                                "ranges": [
                                         "92.118.160.0/24",
                                         "92.118.161.0/24",
@@ -141,7 +141,7 @@
                           {
                                "name": "ARBORN",
                                "id": "076c25a0-30a3-11ec-b4e4-47a8e7a71e86",
-                               "description": "Blocked for port scanning",
+                               "description": "https://www.netscout.com/",
                                "ranges": [
                                         "146.88.240.0/20"
                                ]
