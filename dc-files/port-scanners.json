@@ -83,6 +83,14 @@
                                ]
                           },
                           {
+                               "name": "RAPID7",
+                               "id": "c06fb992-3ad8-11ec-9007-defbeba71e86",
+                               "description": "https://www.rapid7.com/",
+                               "ranges": [
+                                        "71.6.128.0/17"
+                               ]
+                          },	      
+                          {
                                "name": "CENSYS",
                                "id": "bdab92e4-2c05-11ec-8532-5a91e5a71e86",
                                "description": "https://censys.io/",
