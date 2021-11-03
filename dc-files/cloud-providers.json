@@ -89,6 +89,14 @@
                                         "100.24.0.0/13", 
                                         "176.32.64.0/21"
                                ]
+                          }, 
+                          {
+                               "name": "GOOGLE",
+                               "id": "3c19de44-3c6c-11ec-a239-5ea4eca71e86",
+                               "description": "https://www.googleusercontent.com/",
+                               "ranges": [
+                                        "34.64.0.0/10"
+                               ]
                           },            
                           {
                                "name": "DIGITALOCEAN",
