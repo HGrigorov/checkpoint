@@ -95,7 +95,8 @@
                                "id": "3c19de44-3c6c-11ec-a239-5ea4eca71e86",
                                "description": "https://www.googleusercontent.com/",
                                "ranges": [
-                                        "34.64.0.0/10"
+                                        "34.64.0.0/10",
+                                        "34.128.0.0/10"
                                ]
                           },            
                           {
