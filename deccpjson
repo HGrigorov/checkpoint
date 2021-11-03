@@ -16,16 +16,23 @@ my $OBJECT_DESC;
 my $OBJECT_ID;
 my $OBJECT_RANGE;
 
-our ($opt_h, $opt_f, $opt_n, $opt_d, $opt_i, $opt_r);
+our ($opt_c, $opt_h, $opt_f, $opt_n, $opt_d, $opt_i, $opt_r);
 
 # Parse command line
-getopts('hf:n:d:i:r:');
+getopts('chf:n:d:i:r:');
 
-say "\nCheckPoint DataCenter JSON file decoder by Hristo Grigorv\n";
+say "\nCheckPoint Generic DataCenter JSON file decoder by Hristo Grigorv\n";
 
 # Help
 if ($opt_h) {	
-	say "Usage: deccpjson -f <path to JSON file> [-n <name>] [-d <descr>] [-i <id>] [-r <range>] [-h]\n";
+	say "Usage: deccpjson -f <path to JSON file> [-n <name>] [-d <descr>] [-i <id>] [-r <range>] [-h] [-c]\n\n";
+	say "                 -f	path to JSON file";
+	say "                 -n	search for object name";
+	say "                 -d	search for object description";
+	say "                 -i	search for object id";
+	say "                 -r	search for object range";
+	say "                 -c	check JSON structure only";
+	say "                 -h	print usage info\n";
 	exit 1;
 }
 
@@ -74,9 +81,18 @@ my $json_text = do {
 my $json = JSON::PP->new->ascii->pretty->allow_nonref;
 my $data = $json->decode($json_text);
 
+# Quit if only checking file structure
+if ($opt_c) {
+	say "JSON file structure appears valid.\n";
+	exit 1;
+}
+
+my $nobj = 0;
 # Iterate and print
 for ( @{$data->{objects}} ) 
 {
+	$nobj++;
+
 	my $obj_name = $_->{name};
 	my $obj_desc = $_->{description};
 	my $obj_id = $_->{id};
@@ -85,7 +101,7 @@ for ( @{$data->{objects}} )
 
 		my $is_match = 0;
 
-		$is_match = 1 if ( $OBJECT_NAME && index(lc($obj_name), lc($OBJECT_NAME)) != -1 );
+		$is_match = 1 if ( $OBJECT_NAME && index(lc($obj_name), lc($OBJECT_NAME)) != -1);
 		$is_match = 1 if ( $OBJECT_DESC && index(lc($obj_desc), lc($OBJECT_DESC)) != -1 );
 		$is_match = 1 if ( $OBJECT_ID && index(lc($obj_id), lc($OBJECT_ID)) != -1 );
 
@@ -112,6 +128,6 @@ for ( @{$data->{objects}} )
 	}
 }
 
-say;
+say "\nFound total $nobj objects in file.\n";
 
 # EOF
