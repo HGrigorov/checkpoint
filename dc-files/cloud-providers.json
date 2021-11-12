@@ -2,6 +2,18 @@
       "version": "1.0",
       "description": "CheckPoint Generic Data Center file (Cloud Providers)",
       "objects": [
+                      {
+                               "name": "CISCO UCS",
+                               "id": "5e7655ec-437b-11ec-adbf-bc95efa71e86",
+                               "description": "https://www.cisco.com/",
+                               "ranges": [
+                                        "64.68.96.0/19",
+                                        "64.100.0.0/14",
+                                        "66.163.32.0/19",
+                                        "72.163.0.0/16",
+                                        "173.36.0.0/14"
+                               ]
+                          },            
                           {
                                "name": "LINODE",
                                "id": "acb55334-2c0b-11ec-a6e0-7e94e5a71e86",
