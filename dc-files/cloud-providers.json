@@ -3,7 +3,7 @@
       "description": "CheckPoint Generic Data Center file (Cloud Providers)",
       "objects": [
                       {
-                               "name": "CISCO UCS",
+                               "name": "Cisco UCS and WebEx",
                                "id": "5e7655ec-437b-11ec-adbf-bc95efa71e86",
                                "description": "https://www.cisco.com/",
                                "ranges": [
@@ -11,6 +11,7 @@
                                         "64.100.0.0/14",
                                         "66.163.32.0/19",
                                         "72.163.0.0/16",
+                                        "170.72.0.0/16",
                                         "173.36.0.0/14"
                                ]
                           },            
