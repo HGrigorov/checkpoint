@@ -94,6 +94,9 @@ echo "$0:Preparing JSON structure..."
 TOR_IP=`awk '{ print "\\t\\t\\t\\t\\t\""$0"\"," }' $TOR_FILE`
 TOR_IP=${TOR_IP::-1}
 
+# IPv6 addresses cannot contain brackets '[]'
+TOR_IP=$(sed 's/[][]//g' <<<"$TOR_IP")
+
 UUID=$(cat /proc/sys/kernel/random/uuid)
 DATE=$(date)
 
